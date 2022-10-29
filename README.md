@@ -1,8 +1,9 @@
-# NAME
+# kmc-manager
 
 ## About
 
-*
+* manage java app
+* manage minecraft server
 
 ## Requirement
 
