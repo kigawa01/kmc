@@ -14,9 +14,9 @@
         <maven.compiler.target>${java.version}</maven.compiler.target>
     </properties>
 
-    <groupId></groupId>
-    <artifactId></artifactId>
-    <version></version>
+    <groupId>net.kigawa</groupId>
+    <artifactId>kmc-manager</artifactId>
+    <version>1.0</version>
     <name>${project.artifactId}</name>
     <description>add unit</description>
     <url>https://github.com/kigawa01/kutil-unit</url>
