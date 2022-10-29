@@ -129,6 +129,21 @@
             <artifactId>kotlin-stdlib</artifactId>
             <version>${kotlin.version}</version>
         </dependency>
+        <dependency>
+            <groupId>net.kigawa.kutil</groupId>
+            <artifactId>kutil</artifactId>
+            <version>2.1</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kigawa.kutil</groupId>
+            <artifactId>unit</artifactId>
+            <version>1.4</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kigawa.kutil</groupId>
+            <artifactId>log</artifactId>
+            <version>2.0</version>
+        </dependency>
     </dependencies>
 
 </project>
