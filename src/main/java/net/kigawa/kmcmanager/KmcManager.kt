@@ -1,7 +1,7 @@
 package net.kigawa.kmcmanager
 
-import net.kigawa.kmcmanager.util.ErrorBundler
-import net.kigawa.kmcmanager.util.Task
+import net.kigawa.kmcmanager.plugin.Plugins
+import net.kigawa.kmcmanager.util.*
 import net.kigawa.kutil.kutil.KutilFile
 import net.kigawa.kutil.log.log.KLogger
 import net.kigawa.kutil.log.log.fomatter.KFormatter
@@ -26,9 +26,12 @@ class KmcManager {
     init {
         val logger = initLogger()
         val task = Task(logger)
-        container = UnitContainer.create(logger, task)
+        val async = Async(task)
+        container = UnitContainer.create(logger, task, async)
+        container.executor = async::run
         task.run(PROJECT_NAME) {
             initProject(logger, task)
+            container.getUnit(Plugins::class.java).start()
         }
     }
     

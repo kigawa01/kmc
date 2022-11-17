@@ -1,5 +1,6 @@
 package net.kigawa.kmcmanager.util
 
+import net.kigawa.kutil.kutil.StringColor
 import java.util.concurrent.Callable
 import java.util.logging.Logger
 
@@ -19,9 +20,9 @@ class Task(var logger: Logger?) {
 //    }
 //
     fun <T> run(name: String, callable: Callable<T>): T {
-        logger?.info("start $name")
+        logger?.info("${StringColor.GREEN}start${StringColor.RESET}> $name")
         val result = callable.call()
-        logger?.info("  end $name")
+        logger?.info("${StringColor.BLUE}  end${StringColor.RESET}> $name")
         return result
     }
 }
