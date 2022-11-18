@@ -26,27 +26,27 @@ class KmcManager {
     init {
         val logger = initLogger()
         val task = Task(logger)
-        val async = Async(task)
+        val async = Async()
         container = UnitContainer.create(logger, task, async)
-        container.executor = async::run
-        task.run(PROJECT_NAME) {
+        container.executor = async::execute
+        task.execute(PROJECT_NAME) {
             initProject(logger, task)
             container.getUnit(Plugins::class.java).start()
         }
     }
     
-    fun initProject(logger: KLogger, task: Task) {
-        task.run("set formatter") {
+    private fun initProject(logger: KLogger, task: Task) {
+        task.execute("set formatter") {
             Logger.getLogger("").handlers.forEach {
                 it.formatter = KFormatter()
             }
         }
-        task.run("load units") {
+        task.execute("load units") {
             errors.tryAddAll {
                 container.registerUnits(ClassList.create(javaClass))
             }
         }
-        task.run("init units") {
+        task.execute("init units") {
             errors.tryAddAll {
                 container.initUnits()
             }
@@ -55,7 +55,7 @@ class KmcManager {
         errors.clearError {logger.warning(it)}
     }
     
-    fun initLogger(): KLogger {
+    private fun initLogger(): KLogger {
         println("start init logger")
         val logger = KLogger("", null, Level.INFO, KutilFile.getRelativeFile("log"))
         logger.enable()
