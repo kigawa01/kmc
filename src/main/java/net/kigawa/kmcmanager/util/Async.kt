@@ -4,12 +4,13 @@ import java.util.concurrent.*
 
 class Async(private val task: Task): AutoCloseable {
     private var executor = Executors.newCachedThreadPool()
+    private var timeOutSec = 1
     
     fun <T> run(callable: Callable<T>): Future<T> {
         return executor.submit(callable)
     }
     
-    fun  run(runnable: Runnable) {
+    fun run(runnable: Runnable) {
         return executor.execute(runnable)
     }
     
@@ -18,6 +19,7 @@ class Async(private val task: Task): AutoCloseable {
     }
     
     override fun close() {
-        executor.shutdownNow()
+        executor.shutdown()
+        executor.awaitTermination(timeOutSec.toLong(), TimeUnit.SECONDS)
     }
 }

@@ -157,7 +157,7 @@
         <dependency>
             <groupId>net.kigawa.kutil</groupId>
             <artifactId>unit</artifactId>
-            <version>2.0</version>
+            <version>2.3</version>
         </dependency>
         <dependency>
             <groupId>net.kigawa.kutil</groupId>
@@ -165,5 +165,4 @@
             <version>2.0</version>
         </dependency>
     </dependencies>
-
 </project>

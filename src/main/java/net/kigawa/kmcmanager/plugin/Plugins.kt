@@ -16,5 +16,6 @@ class Plugins(private val unitContainer: UnitContainer) {
     
     fun start() {
         unitContainer.addFactory(PluginFactory())
+        unitContainer.close()
     }
 }
