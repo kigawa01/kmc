@@ -3,15 +3,19 @@ package net.kigawa.kmcmanager.util
 import java.util.concurrent.*
 
 class Async(private val task: Task): AutoCloseable {
-    private var executor = Executors.newCachedThreadPool()
+    private var executor: ExecutorService? = Executors.newCachedThreadPool()
     private var timeOutSec = 1
     
     fun <T> run(callable: Callable<T>): Future<T> {
-        return executor.submit(callable)
+        val executor = this.executor
+        if (executor != null) return executor.submit(callable)
+        val futureTask = FutureTask(callable)
+        futureTask.run()
+        return futureTask
     }
     
     fun run(runnable: Runnable) {
-        return executor.execute(runnable)
+        executor?.execute(runnable) ?: runnable.run()
     }
     
     fun <T: Any> runTask(name: String, callable: Callable<T>): Future<T> {
@@ -19,7 +23,9 @@ class Async(private val task: Task): AutoCloseable {
     }
     
     override fun close() {
-        executor.shutdown()
-        executor.awaitTermination(timeOutSec.toLong(), TimeUnit.SECONDS)
+        val executor = this.executor
+        this.executor = null
+        executor?.shutdown()
+        executor?.awaitTermination(timeOutSec.toLong(), TimeUnit.SECONDS)
     }
 }
