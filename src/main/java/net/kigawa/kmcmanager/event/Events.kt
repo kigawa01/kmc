@@ -1,6 +1,5 @@
 package net.kigawa.kmcmanager.event
 
-import net.kigawa.kmcmanager.util.Async
 import net.kigawa.kutil.log.log.KLogger
 import net.kigawa.kutil.unit.annotation.Unit
 import net.kigawa.kutil.unit.container.UnitContainer
@@ -11,7 +10,6 @@ import java.lang.reflect.Method
 class Events(
     private val container: UnitContainer,
     private val logger: KLogger,
-    private val async: Async,
 ) {
     private val listenerFuncList = mutableListOf<ListenerFunc>()
     
@@ -23,14 +21,14 @@ class Events(
     
     private fun registerMethod(method: Method, listener: Listener) {
         val eventClasses = method.parameterTypes.forEach {
-            if (!Util.instanceOf(it, Event::class.java)) return@forEach
+            if (!Util.instanceOf(it, CancelableEvent::class.java)) return@forEach
             synchronized(listenerFuncList) {
                 listenerFuncList.add(ListenerFunc(listener, it, method))
             }
         }
     }
     
-    fun dispatch(event: Event) {
+    fun <T: Event> dispatch(event: T): T {
         val funcList = synchronized(listenerFuncList) {
             listenerFuncList.filter {Util.instanceOf(event.javaClass, it.eventClass)}
         }
@@ -41,12 +39,7 @@ class Events(
                 logger.warning(e)
             }
         }
-    }
-    
-    fun dispatchAsync(event: Event) {
-        async.execute {
-            dispatch(event)
-        }
+        return event
     }
     
     private fun dispatch(event: Event, func: ListenerFunc) {

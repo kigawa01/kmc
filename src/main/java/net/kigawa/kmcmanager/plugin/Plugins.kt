@@ -1,7 +1,11 @@
 package net.kigawa.kmcmanager.plugin
 
+import net.kigawa.kmcmanager.event.Events
+import net.kigawa.kmcmanager.event.plugin.PluginEndEvent
+import net.kigawa.kmcmanager.event.plugin.PluginStartEvent
 import net.kigawa.kmcmanager.factory.PluginFactory
-import net.kigawa.kmcmanager.util.*
+import net.kigawa.kmcmanager.util.PluginDispatcher
+import net.kigawa.kmcmanager.util.Task
 import net.kigawa.kutil.kutil.KutilFile
 import net.kigawa.kutil.log.log.KLogger
 import net.kigawa.kutil.unit.annotation.Unit
@@ -14,7 +18,7 @@ import java.util.concurrent.Future
 @Unit
 class Plugins(
     private val container: UnitContainer,
-    private val async: Async,
+    private val events: Events,
     private val logger: KLogger,
     private val task: Task,
     private val pluginDispatcher: PluginDispatcher,
@@ -52,9 +56,11 @@ class Plugins(
     private fun startPlugins(): List<Future<*>?> {
         return container.getUnitList(Plugin::class.java).map {
             pluginDispatcher.executeAsync {
+                if (events.dispatch(PluginStartEvent(it)).cancel) return@executeAsync
                 task.execute(it.getName()) {
                     it.start()
                 }
+                events.dispatch(PluginEndEvent(it))
             }
         }
     }
