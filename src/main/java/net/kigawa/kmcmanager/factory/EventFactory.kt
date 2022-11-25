@@ -2,13 +2,11 @@ package net.kigawa.kmcmanager.factory
 
 import net.kigawa.kmcmanager.event.Events
 import net.kigawa.kmcmanager.event.Listener
-import net.kigawa.kutil.unit.annotation.Unit
 import net.kigawa.kutil.unit.container.UnitContainer
 import net.kigawa.kutil.unit.factory.DefaultFactory
 import net.kigawa.kutil.unit.factory.UnitFactory
 import net.kigawa.kutil.unit.util.Util
 
-@Unit
 class EventFactory: UnitFactory {
     override fun init(unitClass: Class<*>, unitContainer: UnitContainer): Any {
         if (!isValid(unitClass)) throw Exception("$unitClass is not valid")
