@@ -28,6 +28,13 @@ class ConfigsImpl: Configs {
         }
     }
     
+    @Suppress("UNCHECKED_CAST")
+    override fun <T> loadConfig(configClass: Class<T>): T {
+        return sortListByFunc(loaders, "load") {
+            Util.instanceOf(it.returnType, configClass)
+        }.last().load() as T
+    }
+    
     private fun <T: Any> sortListByFunc(
         list: MutableList<T>,
         name: String,
