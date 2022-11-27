@@ -1,5 +1,5 @@
 package net.kigawa.kmcmanager.configs
 
-interface ConfigLoader<T> {
+interface ConfigLoader<T>: ConfigRegister {
     fun load(): T
 }

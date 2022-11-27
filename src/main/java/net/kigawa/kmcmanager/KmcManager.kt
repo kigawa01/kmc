@@ -1,7 +1,6 @@
 package net.kigawa.kmcmanager
 
-import net.kigawa.kmcmanager.factory.EventFactory
-import net.kigawa.kmcmanager.factory.PluginFactory
+import net.kigawa.kmcmanager.factory.*
 import net.kigawa.kmcmanager.plugin.Plugins
 import net.kigawa.kmcmanager.util.*
 import net.kigawa.kutil.kutil.KutilFile
@@ -35,6 +34,7 @@ class KmcManager {
             initProject(logger, task)
             container.addFactory(PluginFactory())
             container.addFactory(EventFactory())
+            container.addFactory(ConfigFactory())
             container.getUnit(Plugins::class.java).start()
         }
     }
