@@ -1,5 +1,5 @@
 package net.kigawa.kmcmanager.configs
 
-interface ConfigSaver<T>: ConfigRegister {
-    fun save(config: T)
+interface ConfigSaver: ConfigRegister {
+    fun <T> save(config: T)
 }
