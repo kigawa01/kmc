@@ -5,7 +5,7 @@ import net.kigawa.kmcmanager.event.plugin.PluginEndEvent
 import net.kigawa.kmcmanager.event.plugin.PluginStartEvent
 import net.kigawa.kmcmanager.factory.PluginFactory
 import net.kigawa.kmcmanager.util.PluginDispatcher
-import net.kigawa.kmcmanager.util.Task
+import net.kigawa.kmcmanager.util.TaskEecutor
 import net.kigawa.kutil.kutil.KutilFile
 import net.kigawa.kutil.log.log.KLogger
 import net.kigawa.kutil.unit.annotation.Unit
@@ -20,17 +20,17 @@ class Plugins(
     private val container: UnitContainer,
     private val events: Events,
     private val logger: KLogger,
-    private val task: Task,
+    private val taskEecutor: TaskEecutor,
     private val pluginDispatcher: PluginDispatcher,
 ) {
     private val pluginDir: File = KutilFile.getRelativeFile("plugin")
     
     fun start() {
         container.addFactory(PluginFactory())
-        task.execute("load plugins") {
+        taskEecutor.execute("load plugins") {
             loadPlugins()
         }
-        task.execute("run tasks") {
+        taskEecutor.execute("run tasks") {
             startPlugins().forEach {it?.get()}
         }
         container.close()
@@ -57,7 +57,7 @@ class Plugins(
         return container.getUnitList(Plugin::class.java).map {
             pluginDispatcher.executeAsync {
                 if (events.dispatch(PluginStartEvent(it)).cancel) return@executeAsync
-                task.execute(it.getName()) {
+                taskEecutor.execute(it.getName()) {
                     it.start()
                 }
                 events.dispatch(PluginEndEvent(it))

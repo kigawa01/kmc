@@ -2,7 +2,7 @@ package net.kigawa.kmcmanager.util
 
 import java.util.concurrent.*
 
-class Async: AutoCloseable {
+class AsyncExecutor: AutoCloseable {
   var executor: ExecutorService = Executors.newCachedThreadPool()
     private set
   private var timeOutSec = 1

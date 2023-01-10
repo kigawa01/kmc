@@ -8,9 +8,9 @@ import java.util.concurrent.Future
 
 @Unit
 class PluginDispatcher(
-    private val logger: KLogger,
-    private val container: UnitContainer,
-    private val async: Async,
+  private val logger: KLogger,
+  private val container: UnitContainer,
+  private val asyncExecutor: AsyncExecutor,
 ) {
     fun <T> execute(callable: Callable<T>): T? {
         return try {
@@ -23,6 +23,6 @@ class PluginDispatcher(
     }
     
     fun <T> executeAsync(callable: Callable<T>): Future<T?> {
-        return async.submit {execute(callable)}
+        return asyncExecutor.submit {execute(callable)}
     }
 }

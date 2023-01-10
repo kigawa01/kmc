@@ -1,12 +1,12 @@
 package net.kigawa.kmcmanager.configs
 
-import net.kigawa.kmcmanager.util.Async
+import net.kigawa.kmcmanager.util.AsyncExecutor
 import net.kigawa.kutil.unit.annotation.Unit
 import net.kigawa.kutil.unit.util.Util
 import java.lang.reflect.Method
 
 @Unit
-class ConfigsImpl(private val async: Async): Configs {
+class ConfigsImpl(private val asyncExecutor: AsyncExecutor): Configs {
     private val savers = mutableListOf<ConfigSaver>()
     private val loaders = mutableListOf<ConfigLoader>()
     
@@ -15,7 +15,7 @@ class ConfigsImpl(private val async: Async): Configs {
             if (it.parameterTypes.size != 1) false
             else Util.instanceOf(config.javaClass, it.parameterTypes[0])
         }.forEach {
-            async.execute {it.save(config)}
+            asyncExecutor.execute {it.save(config)}
         }
     }
     

@@ -1,8 +1,8 @@
 package net.kigawa.kmcmanager
 
 import net.kigawa.kmcmanager.plugin.Plugins
-import net.kigawa.kmcmanager.util.Async
-import net.kigawa.kmcmanager.util.Task
+import net.kigawa.kmcmanager.util.AsyncExecutor
+import net.kigawa.kmcmanager.util.TaskEecutor
 import net.kigawa.kutil.kutil.KutilFile
 import net.kigawa.kutil.log.log.KLogger
 import net.kigawa.kutil.log.log.fomatter.KFormatter
@@ -28,27 +28,27 @@ class KmcManager {
   
   init {
     val logger = initLogger()
-    val task = Task(logger)
-    val async = Async()
+    val taskExecutor = TaskEecutor(logger)
+    val asyncExecutor = AsyncExecutor()
     container = UnitContainer.create()
-    container.getUnit(InstanceRegistrar::class.java).register(async)
-    container.getUnit(InstanceRegistrar::class.java).register(task)
+    container.getUnit(InstanceRegistrar::class.java).register(asyncExecutor)
+    container.getUnit(InstanceRegistrar::class.java).register(taskExecutor)
     container.getUnit(InstanceRegistrar::class.java).register(logger)
-    async.executor.let {container.getUnit(InstanceRegistrar::class.java).register(it)}
+    asyncExecutor.executor.let {container.getUnit(InstanceRegistrar::class.java).register(it)}
     container.getUnit(UnitAsyncComponent::class.java).add(ExecutorServiceExecutor::class.java)
-    task.execute(PROJECT_NAME) {
-      initProject(logger, task)
+    taskExecutor.execute(PROJECT_NAME) {
+      init(taskExecutor)
       container.getUnit(Plugins::class.java).start()
     }
   }
   
-  private fun initProject(logger: KLogger, task: Task) {
-    task.execute("set formatter") {
+  private fun init(taskExecutor: TaskEecutor) {
+    taskExecutor.execute("set formatter") {
       Logger.getLogger("").handlers.forEach {
         it.formatter = KFormatter()
       }
     }
-    task.execute("load classes") {
+    taskExecutor.execute("load classes") {
       container.getUnit(ResourceRegistrar::class.java).register(javaClass)
     }
   }
