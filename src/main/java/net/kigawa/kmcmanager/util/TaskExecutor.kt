@@ -4,7 +4,7 @@ import net.kigawa.kutil.kutil.StringColor
 import java.util.concurrent.Callable
 import java.util.logging.Logger
 
-class TaskEecutor(private val logger: Logger) {
+class TaskExecutor(private val logger: Logger) {
     fun <T> execute(name: String, callable: Callable<T>): T {
         logger.info("${StringColor.GREEN}start${StringColor.RESET}> $name")
         val result = callable.call()

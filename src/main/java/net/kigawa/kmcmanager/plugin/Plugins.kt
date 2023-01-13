@@ -3,65 +3,61 @@ package net.kigawa.kmcmanager.plugin
 import net.kigawa.kmcmanager.event.Events
 import net.kigawa.kmcmanager.event.plugin.PluginEndEvent
 import net.kigawa.kmcmanager.event.plugin.PluginStartEvent
-import net.kigawa.kmcmanager.factory.PluginFactory
-import net.kigawa.kmcmanager.util.PluginDispatcher
-import net.kigawa.kmcmanager.util.TaskEecutor
+import net.kigawa.kmcmanager.util.AsyncExecutor
+import net.kigawa.kmcmanager.util.TaskExecutor
 import net.kigawa.kutil.kutil.KutilFile
 import net.kigawa.kutil.log.log.KLogger
-import net.kigawa.kutil.unit.annotation.Unit
-import net.kigawa.kutil.unit.classlist.JarfileClassList
-import net.kigawa.kutil.unit.container.UnitContainer
+import net.kigawa.kutil.unit.annotation.Kunit
+import net.kigawa.kutil.unit.api.component.UnitContainer
+import net.kigawa.kutil.unit.extension.registrar.JarRegistrar
 import java.io.File
 import java.io.FileFilter
 import java.util.concurrent.Future
 
-@Unit
+@Kunit
 class Plugins(
-    private val container: UnitContainer,
-    private val events: Events,
-    private val logger: KLogger,
-    private val taskEecutor: TaskEecutor,
-    private val pluginDispatcher: PluginDispatcher,
+  private val container: UnitContainer,
+  private val events: Events,
+  private val logger: KLogger,
+  private val taskExecutor: TaskExecutor,
+  private val asyncExecutor: AsyncExecutor,
 ) {
-    private val pluginDir: File = KutilFile.getRelativeFile("plugin")
-    
-    fun start() {
-        container.addFactory(PluginFactory())
-        taskEecutor.execute("load plugins") {
-            loadPlugins()
-        }
-        taskEecutor.execute("run tasks") {
-            startPlugins().forEach {it?.get()}
-        }
-        container.close()
+  private val pluginDir: File = KutilFile.getRelativeFile("plugin")
+  
+  fun start() {
+    taskExecutor.execute("load plugins") {
+      loadPlugins()
     }
-    
-    private fun loadPlugins() {
-        pluginDir.mkdirs()
-        val files = pluginDir.listFiles(FileFilter {it.name.endsWith(".jar")}) ?: return
-        val classLoader = container.getUnit(PluginClassLoader::class.java)
-        files.forEach {
-            try {
-                classLoader.addPlugin(it)
-            } catch (e: Throwable) {
-                logger.warning(e)
-                return@forEach
-            }
-            val classList = JarfileClassList(it)
-            container.registerUnits(classList).forEach {e-> logger.warning(e)}
-            container.initUnits().forEach {e-> logger.warning(e)}
-        }
+    taskExecutor.execute("run tasks") {
+      startPlugins().forEach {it?.get()}
     }
-    
-    private fun startPlugins(): List<Future<*>?> {
-        return container.getUnitList(Plugin::class.java).map {
-            pluginDispatcher.executeAsync {
-                if (events.dispatch(PluginStartEvent(it)).cancel) return@executeAsync
-                taskEecutor.execute(it.getName()) {
-                    it.start()
-                }
-                events.dispatch(PluginEndEvent(it))
-            }
-        }
+    container.close()
+  }
+  
+  private fun loadPlugins() {
+    pluginDir.mkdirs()
+    val files = pluginDir.listFiles(FileFilter {it.name.endsWith(".jar")}) ?: return
+    val classLoader = container.getUnit(PluginClassLoader::class.java)
+    files.forEach {
+      try {
+        classLoader.addPlugin(it)
+      } catch (e: Throwable) {
+        logger.warning(e)
+        return@forEach
+      }
+      container.getUnit(JarRegistrar::class.java).register(it.toURI().toURL(), "")
     }
+  }
+  
+  private fun startPlugins(): List<Future<*>?> {
+    return container.getUnitList(Plugin::class.java).map {
+      asyncExecutor.submit {
+        if (events.dispatch(PluginStartEvent(it)).cancel) return@submit
+        taskExecutor.execute(it.getName()) {
+          it.start()
+        }
+        events.dispatch(PluginEndEvent(it))
+      }
+    }
+  }
 }
