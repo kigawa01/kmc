@@ -1,7 +1,7 @@
-package net.kigawa.kmcmanager.initfilter
+package net.kigawa.kmccore.initfilter
 
-import net.kigawa.kmcmanager.EventDispatcher
-import net.kigawa.kmcmanager.Listener
+import net.kigawa.kmccore.EventDispatcher
+import net.kigawa.kmccore.Listener
 import net.kigawa.kutil.unit.api.extention.InitializedFilter
 import net.kigawa.kutil.unit.component.InitStack
 

@@ -1,4 +1,4 @@
-package net.kigawa.kmcmanager.annotation
+package net.kigawa.kmccore.annotation
 
 @Retention(AnnotationRetention.RUNTIME)
 @Target(AnnotationTarget.FUNCTION)

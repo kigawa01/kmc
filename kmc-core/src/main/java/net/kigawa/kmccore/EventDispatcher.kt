@@ -1,7 +1,7 @@
-package net.kigawa.kmcmanager
+package net.kigawa.kmccore
 
-import net.kigawa.kmcmanager.annotation.EventHandler
-import net.kigawa.kmcmanager.event.Event
+import net.kigawa.kmccore.annotation.EventHandler
+import net.kigawa.kmccore.event.Event
 import net.kigawa.kutil.log.log.KLogger
 import net.kigawa.kutil.unit.annotation.Kunit
 import net.kigawa.kutil.unit.api.component.UnitContainer

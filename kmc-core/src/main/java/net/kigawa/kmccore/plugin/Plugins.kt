@@ -1,10 +1,10 @@
-package net.kigawa.kmcmanager.plugin
+package net.kigawa.kmccore.plugin
 
-import net.kigawa.kmcmanager.EventDispatcher
-import net.kigawa.kmcmanager.event.plugin.PluginEndEvent
-import net.kigawa.kmcmanager.event.plugin.PluginStartEvent
-import net.kigawa.kmcmanager.util.AsyncExecutor
-import net.kigawa.kmcmanager.util.TaskExecutor
+import net.kigawa.kmccore.EventDispatcher
+import net.kigawa.kmccore.event.plugin.PluginEndEvent
+import net.kigawa.kmccore.event.plugin.PluginStartEvent
+import net.kigawa.kmccore.util.AsyncExecutor
+import net.kigawa.kmccore.util.TaskExecutor
 import net.kigawa.kutil.kutil.KutilFile
 import net.kigawa.kutil.log.log.KLogger
 import net.kigawa.kutil.unit.annotation.Kunit

@@ -1,4 +1,4 @@
-package net.kigawa.kmcmanager.util
+package net.kigawa.kmccore.util
 
 import java.util.concurrent.Callable
 

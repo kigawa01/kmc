@@ -1,4 +1,4 @@
-package net.kigawa.kmcmanager.plugin
+package net.kigawa.kmccore.plugin
 
 import net.kigawa.kutil.unit.annotation.Unit
 import java.io.File

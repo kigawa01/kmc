@@ -1,9 +1,9 @@
-package net.kigawa.kmcmanager
+package net.kigawa.kmccore
 
-import net.kigawa.kmcmanager.initfilter.EventListenerFilter
-import net.kigawa.kmcmanager.plugin.Plugins
-import net.kigawa.kmcmanager.util.AsyncExecutor
-import net.kigawa.kmcmanager.util.TaskExecutor
+import net.kigawa.kmccore.initfilter.EventListenerFilter
+import net.kigawa.kmccore.plugin.Plugins
+import net.kigawa.kmccore.util.AsyncExecutor
+import net.kigawa.kmccore.util.TaskExecutor
 import net.kigawa.kutil.kutil.KutilFile
 import net.kigawa.kutil.log.log.KLogger
 import net.kigawa.kutil.log.log.fomatter.KFormatter

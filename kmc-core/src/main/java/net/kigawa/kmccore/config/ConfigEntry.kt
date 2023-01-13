@@ -1,4 +1,4 @@
-package net.kigawa.kmcmanager.config
+package net.kigawa.kmccore.config
 
 import net.kigawa.kutil.unit.concurrent.ConcurrentList
 
