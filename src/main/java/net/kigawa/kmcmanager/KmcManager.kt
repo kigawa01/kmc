@@ -35,15 +35,16 @@ class KmcManager {
   }
   
   private fun init(taskExecutor: TaskExecutor) {
-    val classRegistrar = container.getUnit(ClassRegistrar::class.java)
-    classRegistrar.register(AsyncExecutor::class.java)
-    container.getUnit(InstanceRegistrar::class.java).register(container.getUnit(AsyncExecutor::class.java).executor)
-    container.getUnit(UnitAsyncComponent::class.java).add(ExecutorServiceExecutor::class.java)
-    
-    taskExecutor.execute("load classes") {
+    taskExecutor.execute("init $PROJECT_NAME") {
+      val classRegistrar = container.getUnit(ClassRegistrar::class.java)
+      classRegistrar.register(AsyncExecutor::class.java)
+      container.getUnit(InstanceRegistrar::class.java).register(container.getUnit(AsyncExecutor::class.java).executor)
+      container.getUnit(UnitAsyncComponent::class.java).add(ExecutorServiceExecutor::class.java)
+      
       container.getUnit(ResourceRegistrar::class.java).register(javaClass)
+      
+      container.getUnit(InitializedFilterComponent::class.java).add(EventListenerFilter::class.java)
     }
-    container.getUnit(InitializedFilterComponent::class.java).add(EventListenerFilter::class.java)
   }
   
   private fun initLogger(): KLogger {
