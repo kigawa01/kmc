@@ -1,13 +1,13 @@
 package net.kigawa.kmcmanager
 
+import net.kigawa.kmcmanager.initfilter.EventListenerFilter
 import net.kigawa.kmcmanager.plugin.Plugins
 import net.kigawa.kmcmanager.util.AsyncExecutor
 import net.kigawa.kmcmanager.util.TaskExecutor
 import net.kigawa.kutil.kutil.KutilFile
 import net.kigawa.kutil.log.log.KLogger
 import net.kigawa.kutil.log.log.fomatter.KFormatter
-import net.kigawa.kutil.unit.api.component.UnitAsyncComponent
-import net.kigawa.kutil.unit.api.component.UnitContainer
+import net.kigawa.kutil.unit.api.component.*
 import net.kigawa.kutil.unit.extension.async.ExecutorServiceExecutor
 import net.kigawa.kutil.unit.extension.registrar.*
 import java.util.logging.Level
@@ -28,9 +28,6 @@ class KmcManager {
   init {
     container.getUnit(InstanceRegistrar::class.java).register(initLogger())
     container.getUnit(ClassRegistrar::class.java).register(TaskExecutor::class.java)
-    container.getUnit(ClassRegistrar::class.java).register(AsyncExecutor::class.java)
-    container.getUnit(InstanceRegistrar::class.java).register(container.getUnit(AsyncExecutor::class.java).executor)
-    container.getUnit(UnitAsyncComponent::class.java).add(ExecutorServiceExecutor::class.java)
     container.getUnit(TaskExecutor::class.java).execute(PROJECT_NAME) {
       init(container.getUnit(TaskExecutor::class.java))
       container.getUnit(Plugins::class.java).start()
@@ -38,9 +35,15 @@ class KmcManager {
   }
   
   private fun init(taskExecutor: TaskExecutor) {
+    val classRegistrar = container.getUnit(ClassRegistrar::class.java)
+    classRegistrar.register(AsyncExecutor::class.java)
+    container.getUnit(InstanceRegistrar::class.java).register(container.getUnit(AsyncExecutor::class.java).executor)
+    container.getUnit(UnitAsyncComponent::class.java).add(ExecutorServiceExecutor::class.java)
+    
     taskExecutor.execute("load classes") {
       container.getUnit(ResourceRegistrar::class.java).register(javaClass)
     }
+    container.getUnit(InitializedFilterComponent::class.java).add(EventListenerFilter::class.java)
   }
   
   private fun initLogger(): KLogger {

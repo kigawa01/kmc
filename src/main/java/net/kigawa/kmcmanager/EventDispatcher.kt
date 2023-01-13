@@ -1,13 +1,15 @@
-package net.kigawa.kmcmanager.event
+package net.kigawa.kmcmanager
 
+import net.kigawa.kmcmanager.annotation.EventHandler
+import net.kigawa.kmcmanager.event.Event
 import net.kigawa.kutil.log.log.KLogger
-import net.kigawa.kutil.unit.annotation.Unit
+import net.kigawa.kutil.unit.annotation.Kunit
 import net.kigawa.kutil.unit.api.component.UnitContainer
 import net.kigawa.kutil.unit.util.ReflectionUtil
 import java.lang.reflect.Method
 
-@Unit
-class Events(
+@Kunit
+class EventDispatcher(
   private val container: UnitContainer,
   private val logger: KLogger,
 ) {
@@ -15,13 +17,14 @@ class Events(
   
   fun registerListener(listener: Listener) {
     listener.javaClass.methods.forEach {
+      if (!it.isAnnotationPresent(EventHandler::class.java)) return@forEach
       registerMethod(it, listener)
     }
   }
   
   private fun registerMethod(method: Method, listener: Listener) {
-    val eventClasses = method.parameterTypes.forEach {
-      if (!ReflectionUtil.instanceOf(it, CancelableEvent::class.java)) return@forEach
+    method.parameterTypes.forEach {
+      if (!ReflectionUtil.instanceOf(it, Event::class.java)) return@forEach
       synchronized(listenerFuncList) {
         listenerFuncList.add(ListenerFunc(listener, it, method))
       }
