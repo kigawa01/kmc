@@ -1,12 +1,12 @@
 package net.kigawa.kmccore.plugin
 
-import net.kigawa.kutil.unit.annotation.Unit
+import net.kigawa.kutil.unit.annotation.Kunit
 import java.io.File
 import java.net.URLClassLoader
 
-@Unit
+@Kunit
 class PluginClassLoader: URLClassLoader(arrayOf(), getSystemClassLoader()) {
-    fun addPlugin(plugin: File) {
-        addURL(plugin.toURI().toURL())
-    }
+  fun addPlugin(plugin: File) {
+    addURL(plugin.toURI().toURL())
+  }
 }

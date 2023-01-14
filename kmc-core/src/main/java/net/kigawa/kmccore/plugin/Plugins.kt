@@ -9,9 +9,13 @@ import net.kigawa.kutil.kutil.KutilFile
 import net.kigawa.kutil.log.log.KLogger
 import net.kigawa.kutil.unit.annotation.Kunit
 import net.kigawa.kutil.unit.api.component.UnitContainer
-import net.kigawa.kutil.unit.extension.registrar.JarRegistrar
+import net.kigawa.kutil.unit.component.UnitIdentify
+import net.kigawa.kutil.unit.extension.registrar.ListRegistrar
+import net.kigawa.kutil.unit.util.AnnotationUtil
 import java.io.File
 import java.io.FileFilter
+import java.net.JarURLConnection
+import java.util.*
 import java.util.concurrent.Future
 
 @Kunit
@@ -37,16 +41,37 @@ class Plugins(
   private fun loadPlugins() {
     pluginDir.mkdirs()
     val files = pluginDir.listFiles(FileFilter {it.name.endsWith(".jar")}) ?: return
-    val classLoader = container.getUnit(PluginClassLoader::class.java)
-    files.forEach {
-      try {
-        classLoader.addPlugin(it)
-      } catch (e: Throwable) {
-        logger.warning(e)
-        return@forEach
-      }
-      container.getUnit(JarRegistrar::class.java).register(it.toURI().toURL(), "")
+    container.getUnit(ListRegistrar::class.java).register(files.flatMap {
+      loadPlugin(it)
+    })
+  }
+  
+  private fun loadPlugin(file: File): MutableList<UnitIdentify<out Any>> {
+    val identifies = mutableListOf<UnitIdentify<out Any>>()
+    val resource = file.toURI().toURL()
+    
+    try {
+      container.getUnit(PluginClassLoader::class.java).addPlugin(file)
+    } catch (e: Throwable) {
+      logger.warning(e)
+      return identifies
     }
+    
+    (resource.openConnection() as JarURLConnection).jarFile.use {jarFile->
+      for (entry in Collections.list(jarFile.entries())) {
+        var name = entry.name
+        if (!name.endsWith(".class")) continue
+        name = name.replace('/', '.').replace(".class$".toRegex(), "")
+        try {
+          val unitClass = Class.forName(name)
+          if (AnnotationUtil.hasUnitAnnotation(unitClass))
+            identifies.add(UnitIdentify(unitClass, AnnotationUtil.getUnitNameByAnnotation(unitClass)))
+        } catch (e: Throwable) {
+          logger.warning(e)
+        }
+      }
+    }
+    return identifies
   }
   
   private fun startPlugins(): List<Future<*>?> {
