@@ -30,7 +30,7 @@ class Plugins(
   
   fun start() {
     taskExecutor.execute("load plugins") {
-      loadPlugins()
+      loadJars()
     }
     taskExecutor.execute("run tasks") {
       startPlugins().forEach {it?.get()}
@@ -38,15 +38,31 @@ class Plugins(
     container.close()
   }
   
-  private fun loadPlugins() {
+  private fun startPlugins(): List<Future<*>?> {
+    return container.getUnitList(Plugin::class.java).map {
+      startPlugin(it)
+    }
+  }
+  
+  fun startPlugin(plugin: Plugin): Future<Unit> {
+    return asyncExecutor.submit {
+      if (eventDispatcher.dispatch(PluginStartEvent(plugin)).cancel) return@submit
+      taskExecutor.execute(plugin.getName()) {
+        plugin.start()
+      }
+      eventDispatcher.dispatch(PluginEndEvent(plugin))
+    }
+  }
+  
+  private fun loadJars() {
     pluginDir.mkdirs()
     val files = pluginDir.listFiles(FileFilter {it.name.endsWith(".jar")}) ?: return
     container.getUnit(ListRegistrar::class.java).register(files.flatMap {
-      loadPlugin(it)
+      loadJar(it)
     })
   }
   
-  private fun loadPlugin(file: File): MutableList<UnitIdentify<out Any>> {
+  private fun loadJar(file: File): MutableList<UnitIdentify<out Any>> {
     val identifies = mutableListOf<UnitIdentify<out Any>>()
     val resource = file.toURI().toURL()
     
@@ -72,17 +88,5 @@ class Plugins(
       }
     }
     return identifies
-  }
-  
-  private fun startPlugins(): List<Future<*>?> {
-    return container.getUnitList(Plugin::class.java).map {
-      asyncExecutor.submit {
-        if (eventDispatcher.dispatch(PluginStartEvent(it)).cancel) return@submit
-        taskExecutor.execute(it.getName()) {
-          it.start()
-        }
-        eventDispatcher.dispatch(PluginEndEvent(it))
-      }
-    }
   }
 }

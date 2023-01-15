@@ -1,6 +1,6 @@
 package net.kigawa.kmccore
 
-import net.kigawa.kmccore.initfilter.EventListenerFilter
+import net.kigawa.kmccore.initfilter.PluginFilter
 import net.kigawa.kmccore.plugin.Plugins
 import net.kigawa.kmccore.util.AsyncExecutor
 import net.kigawa.kmccore.util.TaskExecutor
@@ -42,8 +42,7 @@ class KmcManager {
       container.getUnit(UnitAsyncComponent::class.java).add(ExecutorServiceExecutor::class.java)
       
       container.getUnit(ResourceRegistrar::class.java).register(javaClass)
-      
-      container.getUnit(InitializedFilterComponent::class.java).add(EventListenerFilter::class.java)
+      container.getUnit(InitializedFilterComponent::class.java).add(PluginFilter::class.java)
     }
   }
   
