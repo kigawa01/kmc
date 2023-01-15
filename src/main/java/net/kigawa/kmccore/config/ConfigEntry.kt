@@ -1,12 +1,14 @@
 package net.kigawa.kmccore.config
 
+import net.kigawa.kmccore.plugin.Plugin
 import net.kigawa.kutil.unit.concurrent.ConcurrentList
 
 class ConfigEntry<T: Any>(
-  val key: ConfigKey<T>,
+  val key: String,
+  val pluginClass: Class<out Plugin>,
   var value: T,
 ) {
-  constructor(key: ConfigKey<T>): this(key, key.getDefaultValue())
+  constructor(key: ConfigKey<T>, pluginClass: Class<out Plugin>): this(key.getId(), pluginClass, key.getDefaultValue())
   
   private val listeners = ConcurrentList<(T)->Unit>()
   
