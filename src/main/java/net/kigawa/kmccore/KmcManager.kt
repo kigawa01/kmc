@@ -1,6 +1,7 @@
 package net.kigawa.kmccore
 
-import net.kigawa.kmccore.initfilter.PluginFilter
+import net.kigawa.kmccore.initfilter.ListenerFilter
+import net.kigawa.kmccore.plugin.Plugin
 import net.kigawa.kmccore.plugin.Plugins
 import net.kigawa.kmccore.util.AsyncExecutor
 import net.kigawa.kmccore.util.TaskExecutor
@@ -15,17 +16,18 @@ import java.util.logging.Logger
 
 class KmcManager {
   private val container: UnitContainer = UnitContainer.create()
+  val preLoadPlugin = mutableListOf<Class<out Plugin>>()
   
   companion object {
     const val PROJECT_NAME = "kmc manager"
     
     @JvmStatic
     fun main(args: Array<String>) {
-      KmcManager()
+      KmcManager().start()
     }
   }
   
-  init {
+  fun start() {
     container.getUnit(InstanceRegistrar::class.java).register(initLogger())
     container.getUnit(ClassRegistrar::class.java).register(TaskExecutor::class.java)
     container.getUnit(TaskExecutor::class.java).execute(PROJECT_NAME) {
@@ -42,7 +44,7 @@ class KmcManager {
       container.getUnit(UnitAsyncComponent::class.java).add(ExecutorServiceExecutor::class.java)
       
       container.getUnit(ResourceRegistrar::class.java).register(javaClass)
-      container.getUnit(InitializedFilterComponent::class.java).add(PluginFilter::class.java)
+      container.getUnit(InitializedFilterComponent::class.java).add(ListenerFilter::class.java)
     }
   }
   

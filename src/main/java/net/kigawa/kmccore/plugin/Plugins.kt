@@ -1,6 +1,7 @@
 package net.kigawa.kmccore.plugin
 
 import net.kigawa.kmccore.EventDispatcher
+import net.kigawa.kmccore.KmcManager
 import net.kigawa.kmccore.event.plugin.PluginEndEvent
 import net.kigawa.kmccore.event.plugin.PluginStartEvent
 import net.kigawa.kmccore.util.AsyncExecutor
@@ -11,6 +12,7 @@ import net.kigawa.kutil.unit.annotation.Kunit
 import net.kigawa.kutil.unit.api.component.UnitContainer
 import net.kigawa.kutil.unit.component.UnitIdentify
 import net.kigawa.kutil.unit.extension.registrar.ListRegistrar
+import net.kigawa.kutil.unit.extension.registrar.ResourceRegistrar
 import net.kigawa.kutil.unit.util.AnnotationUtil
 import java.io.File
 import java.io.FileFilter
@@ -25,11 +27,12 @@ class Plugins(
   private val logger: KLogger,
   private val taskExecutor: TaskExecutor,
   private val asyncExecutor: AsyncExecutor,
+  private val kmcManager: KmcManager,
 ) {
   private val pluginDir: File = KutilFile.getRelativeFile("plugin")
-  
   fun start() {
     taskExecutor.execute("load plugins") {
+      kmcManager.preLoadPlugin.forEach {container.getUnit(ResourceRegistrar::class.java).register(it)}
       loadJars()
     }
     taskExecutor.execute("run tasks") {
