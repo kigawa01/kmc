@@ -1,7 +1,8 @@
-package net.kigawa.kmccore
+package net.kigawa.test.kmccore
 
 import junit.framework.TestCase
-import net.kigawa.kmccore.testplugin.TestPlugin
+import net.kigawa.kmccore.KmcManager
+import net.kigawa.test.kmccore.testplugin.TestPlugin
 
 abstract class AbstractTest: TestCase() {
   val kmcManager = KmcManager()

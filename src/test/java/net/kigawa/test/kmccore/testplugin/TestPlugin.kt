@@ -1,4 +1,4 @@
-package net.kigawa.kmccore.testplugin
+package net.kigawa.test.kmccore.testplugin
 
 import net.kigawa.kmccore.plugin.Plugin
 import net.kigawa.kutil.unit.concurrent.ThreadLock
