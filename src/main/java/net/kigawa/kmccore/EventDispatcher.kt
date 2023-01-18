@@ -52,11 +52,11 @@ class EventDispatcher(
     }
     func.method.invoke(func.listener, params)
   }
+  
+  class ListenerFunc(
+    val listener: Listener,
+    val eventClass: Class<*>,
+    val method: Method,
+  )
 }
 
-class ListenerFunc(
-  val listener: Listener,
-  val eventClass: Class<*>,
-  val method: Method,
-) {
-}
