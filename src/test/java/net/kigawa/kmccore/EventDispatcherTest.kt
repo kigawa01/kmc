@@ -1,14 +1,13 @@
-package net.kigawa.test.kmccore
+package net.kigawa.kmccore
 
-import net.kigawa.kmccore.EventDispatcher
-import net.kigawa.kmccore.Listener
 import net.kigawa.kmccore.annotation.EventHandler
 import net.kigawa.kmccore.event.Event
 import net.kigawa.kmccore.plugin.Plugin
-import net.kigawa.test.kmccore.testplugin.TestPlugin
+import net.kigawa.kmccore.testplugin.TestPlugin
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
+import java.io.File
 
 @RunWith(JUnit4::class)
 class EventDispatcherTest: AbstractTest() {

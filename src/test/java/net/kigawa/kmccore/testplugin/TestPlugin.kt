@@ -1,4 +1,4 @@
-package net.kigawa.test.kmccore.testplugin
+package net.kigawa.kmccore.testplugin
 
 import net.kigawa.kmccore.plugin.Plugin
 import net.kigawa.kutil.unit.annotation.Kunit
