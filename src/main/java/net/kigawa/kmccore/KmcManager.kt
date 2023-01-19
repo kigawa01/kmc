@@ -19,7 +19,8 @@ import java.util.logging.Logger
 class KmcManager: AutoCloseable {
   val container: UnitContainer = UnitContainer.create()
   val preLoadPlugin = mutableListOf<Class<out Plugin>>()
-  val classPath  = mutableListOf<File>()
+  val classPath = mutableListOf<File>()
+  var autoClose = true
   private var closed = true
   
   companion object {
@@ -56,13 +57,17 @@ class KmcManager: AutoCloseable {
       
       val packageName = javaClass.getPackage().name
       val classLoader = javaClass.classLoader
-      val resource = classLoader.getResource(javaClass.canonicalName.replace('.', '/') + ".class")
+      val resource = classLoader.getResource(packageName.replace('.', '/'))
                      ?: throw UnitException("could not get resource")
       when (resource.protocol) {
         JarRegistrar.PROTOCOL      ->jarRegistrar.register(resource, packageName)
         FileClassRegistrar.PROTOCOL-> {
-          fileClassRegistrar.register(File(resource.file).parentFile.toURI().toURL(), packageName)
+          classPath.forEach {
+            fileClassRegistrar.register(File(it, packageName.replace('.', '/')).toURI().toURL(), packageName)
+          }
+          fileClassRegistrar.register(resource, packageName)
         }
+        
         else                       ->throw UnitException("could not support file type")
       }
       

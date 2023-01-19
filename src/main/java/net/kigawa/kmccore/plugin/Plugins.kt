@@ -36,12 +36,12 @@ class Plugins(
       loadJars()
     }
     taskExecutor.execute("run tasks") {
-      startPlugins().forEach {it?.get()}
+      startPlugins().forEach {it.get()}
     }
-    container.close()
+    if (kmcManager.autoClose) container.close()
   }
   
-  private fun startPlugins(): List<Future<*>?> {
+  private fun startPlugins(): List<Future<*>> {
     return container.getUnitList(Plugin::class.java).map {
       startPlugin(it)
     }

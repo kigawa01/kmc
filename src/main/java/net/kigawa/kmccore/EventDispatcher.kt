@@ -47,10 +47,15 @@ class EventDispatcher(
   
   private fun dispatch(event: Event, func: ListenerFunc) {
     val params = func.method.parameterTypes.map {
-      if (ReflectionUtil.instanceOf(event.javaClass, func.eventClass)) event
+      if (ReflectionUtil.instanceOf(event.javaClass, it)) event
       else container.getUnit(it)
     }
-    func.method.invoke(func.listener, params)
+    try {
+      func.method.invoke(func.listener, *params.toTypedArray())
+    } catch (e: IllegalArgumentException) {
+      logger.warning(e)
+      logger.warning("params: $params")
+    }
   }
   
   class ListenerFunc(

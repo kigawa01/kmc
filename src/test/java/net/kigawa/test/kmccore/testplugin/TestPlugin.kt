@@ -1,16 +1,13 @@
 package net.kigawa.test.kmccore.testplugin
 
 import net.kigawa.kmccore.plugin.Plugin
-import net.kigawa.kutil.unit.concurrent.ThreadLock
-import java.util.concurrent.TimeUnit
+import net.kigawa.kutil.unit.annotation.Kunit
 
+@Kunit
 class TestPlugin: Plugin {
-  private val threadLock = ThreadLock()
   override fun start() {
-    threadLock.block(1, TimeUnit.MINUTES)
   }
   
   override fun close() {
-    threadLock.signeAll()
   }
 }
