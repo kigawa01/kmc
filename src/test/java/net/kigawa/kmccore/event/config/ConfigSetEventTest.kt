@@ -31,10 +31,10 @@ class ConfigSetEventTest: AbstractTest() {
     val key = SimpleConfigKey("id", "default")
     configs.set(key, TestPlugin::class.java, "value")
     
-    assertEquals(key, listener.configSetEvent.key)
-    assertEquals("default", listener.configSetEvent.beforeValue)
-    assertEquals(TestPlugin::class.java, listener.configSetEvent.pluginClass)
-    assertEquals("value", listener.configSetEvent.changedValue)
+    assertEquals(key, listener.configSetEvent?.key)
+    assertEquals("default", listener.configSetEvent?.beforeValue)
+    assertEquals(TestPlugin::class.java, listener.configSetEvent?.pluginClass)
+    assertEquals("value", listener.configSetEvent?.changedValue)
   }
   
   @After

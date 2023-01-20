@@ -28,5 +28,6 @@ class EventDispatcherTest: AbstractTest() {
     eventDispatcher.registerListener(listener)
     eventDispatcher.dispatch(event)
     assertSame(event, listener.testEvent)
+    assertNotNull(listener.testPlugin)
   }
 }

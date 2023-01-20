@@ -7,14 +7,16 @@ import net.kigawa.kmccore.plugin.Plugin
 
 class TestListener: Listener {
   override val pluginClass: Class<out Plugin> = TestPlugin::class.java
-  lateinit var testEvent: TestEvent
+  var testEvent: TestEvent? = null
+  var testPlugin: TestPlugin? = null
   
   @EventHandler
-  fun testEvent(event: TestEvent) {
+  fun testEvent(event: TestEvent, testPlugin: TestPlugin) {
     this.testEvent = event
+    this.testPlugin = testPlugin
   }
   
-  lateinit var configSetEvent: ConfigSetEvent<out Any>
+  var configSetEvent: ConfigSetEvent<out Any>? = null
   
   @EventHandler
   fun configSetEvent(event: ConfigSetEvent<out Any>) {
