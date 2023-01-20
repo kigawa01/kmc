@@ -1,13 +1,10 @@
 package net.kigawa.kmccore
 
-import net.kigawa.kmccore.annotation.EventHandler
-import net.kigawa.kmccore.event.Event
-import net.kigawa.kmccore.plugin.Plugin
-import net.kigawa.kmccore.testplugin.TestPlugin
+import net.kigawa.testplugin.TestEvent
+import net.kigawa.testplugin.TestListener
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import java.io.File
 
 @RunWith(JUnit4::class)
 class EventDispatcherTest: AbstractTest() {
@@ -30,18 +27,6 @@ class EventDispatcherTest: AbstractTest() {
     val event = TestEvent()
     eventDispatcher.registerListener(listener)
     eventDispatcher.dispatch(event)
-    assertSame(event, listener.event)
+    assertSame(event, listener.testEvent)
   }
 }
-
-class TestListener: Listener {
-  override val pluginClass: Class<out Plugin> = TestPlugin::class.java
-  lateinit var event: TestEvent
-  
-  @EventHandler
-  fun configEvent(event: TestEvent) {
-    this.event = event
-  }
-}
-
-class TestEvent: Event
