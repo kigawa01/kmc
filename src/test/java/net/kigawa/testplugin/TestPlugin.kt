@@ -8,6 +8,6 @@ class TestPlugin: Plugin {
   override fun start() {
   }
   
-  override fun close() {
+  override fun end() {
   }
 }

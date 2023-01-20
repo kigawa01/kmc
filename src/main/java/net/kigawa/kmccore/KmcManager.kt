@@ -41,6 +41,9 @@ class KmcManager: AutoCloseable {
       init(container.getUnit(TaskExecutor::class.java))
       container.getUnit(Plugins::class.java).start()
     }
+    if (!autoClose) return
+    container.getUnit(AsyncExecutor::class.java).waitTask()
+    container.close()
   }
   
   private fun init(taskExecutor: TaskExecutor) {
@@ -91,6 +94,7 @@ class KmcManager: AutoCloseable {
       if (closed) return
       closed = true
     }
+    container.getUnit(Plugins::class.java).end()
     container.close()
   }
 }

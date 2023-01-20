@@ -9,7 +9,7 @@ class YamlConfigPlugin: Plugin {
     TODO("Not yet implemented")
   }
   
-  override fun close() {
+  override fun end() {
     TODO("Not yet implemented")
   }
 }

@@ -18,7 +18,6 @@ import java.io.File
 import java.io.FileFilter
 import java.net.JarURLConnection
 import java.util.*
-import java.util.concurrent.Future
 
 @Kunit
 class Plugins(
@@ -30,31 +29,42 @@ class Plugins(
   private val kmcManager: KmcManager,
 ) {
   private val pluginDir: File = KutilFile.getRelativeFile("plugin")
+  
+  @Synchronized
   fun start() {
     taskExecutor.execute("load plugins") {
       kmcManager.preLoadPlugin.forEach {container.getUnit(ResourceRegistrar::class.java).register(it)}
       loadJars()
     }
-    taskExecutor.execute("run tasks") {
-      startPlugins().forEach {it.get()}
-    }
-    if (kmcManager.autoClose) container.close()
-  }
-  
-  private fun startPlugins(): List<Future<*>> {
-    return container.getUnitList(Plugin::class.java).map {
+    taskExecutor.start("plugins")
+    container.getUnitList(Plugin::class.java).map {
       startPlugin(it)
     }
   }
   
-  fun startPlugin(plugin: Plugin): Future<Unit> {
-    return asyncExecutor.submit {
-      if (eventDispatcher.dispatch(PluginStartEvent(plugin)).cancel) return@submit
-      taskExecutor.execute(plugin.getName()) {
-        plugin.start()
-      }
-      eventDispatcher.dispatch(PluginEndEvent(plugin))
+  @Synchronized
+  fun end() {
+    container.getUnitList(Plugin::class.java).map {
+      endPlugin(it)
     }
+    taskExecutor.end("plugins")
+  }
+  
+  @Synchronized
+  fun startPlugin(plugin: Plugin) {
+    asyncExecutor.submit(plugin) {
+      if (eventDispatcher.dispatch(PluginStartEvent(plugin)).cancel) return@submit
+      taskExecutor.start(plugin.getName())
+      plugin.start()
+    }
+  }
+  
+  @Synchronized
+  fun endPlugin(plugin: Plugin) {
+    if (eventDispatcher.dispatch(PluginEndEvent(plugin)).cancel) return
+    plugin.end()
+    taskExecutor.end(plugin.getName())
+    asyncExecutor.waitTask(plugin)
   }
   
   private fun loadJars() {
