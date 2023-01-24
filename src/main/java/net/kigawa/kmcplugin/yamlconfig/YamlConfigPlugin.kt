@@ -5,11 +5,11 @@ import net.kigawa.kutil.unit.annotation.Kunit
 
 @Kunit
 class YamlConfigPlugin: Plugin {
-  override fun start() {
+  override fun onEnable() {
     TODO("Not yet implemented")
   }
   
-  override fun end() {
+  override fun onDisable() {
     TODO("Not yet implemented")
   }
 }

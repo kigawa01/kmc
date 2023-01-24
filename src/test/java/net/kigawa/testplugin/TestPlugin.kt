@@ -5,9 +5,9 @@ import net.kigawa.kutil.unit.annotation.Kunit
 
 @Kunit
 class TestPlugin: Plugin {
-  override fun start() {
+  override fun onEnable() {
   }
   
-  override fun end() {
+  override fun onDisable() {
   }
 }

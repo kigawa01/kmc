@@ -39,24 +39,24 @@ class Plugins(
     }
     taskExecutor.start("plugins")
     container.getUnitList(Plugin::class.java).map {
-      startPlugin(it)
+      enablePlugin(it)
     }
   }
   
   @Synchronized
   fun end() {
     container.getUnitList(Plugin::class.java).map {
-      endPlugin(it)
+      disablePlugin(it)
     }
     taskExecutor.end("plugins")
   }
   
   @Synchronized
-  fun startPlugin(plugin: Plugin) {
+  fun enablePlugin(plugin: Plugin) {
     asyncExecutor.submit(plugin) {
       if (eventDispatcher.dispatch(PluginStartEvent(plugin)).cancel) return@submit
       taskExecutor.start(plugin.getName())
-      plugin.start()
+      plugin.onEnable()
       container.getUnitList(Listener::class.java)
         .filter {it.plugin == plugin}
         .forEach(eventDispatcher::registerListener)
@@ -64,10 +64,10 @@ class Plugins(
   }
   
   @Synchronized
-  fun endPlugin(plugin: Plugin) {
+  fun disablePlugin(plugin: Plugin) {
     if (eventDispatcher.dispatch(PluginEndEvent(plugin)).cancel) return
     eventDispatcher.unregister(plugin)
-    plugin.end()
+    plugin.onDisable()
     taskExecutor.end(plugin.getName())
     asyncExecutor.waitTask(plugin)
   }

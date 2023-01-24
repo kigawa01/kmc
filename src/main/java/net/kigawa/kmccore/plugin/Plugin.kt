@@ -5,6 +5,6 @@ interface Plugin {
     return javaClass.simpleName
   }
   
-  fun start()
-  fun end()
+  fun onEnable()
+  fun onDisable()
 }
