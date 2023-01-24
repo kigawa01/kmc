@@ -1,6 +1,6 @@
 package net.kigawa.kmccore
 
-import net.kigawa.kmccore.initfilter.ListenerFilter
+import net.kigawa.kmccore.initfilter.PluginFilter
 import net.kigawa.kmccore.plugin.Plugin
 import net.kigawa.kmccore.plugin.Plugins
 import net.kigawa.kmccore.util.AsyncExecutor
@@ -74,7 +74,7 @@ class KmcManager: AutoCloseable {
         else                       ->throw UnitException("could not support file type")
       }
       
-      container.getUnit(InitializedFilterComponent::class.java).add(ListenerFilter::class.java)
+      container.getUnit(InitializedFilterComponent::class.java).add(PluginFilter::class.java)
     }
   }
   

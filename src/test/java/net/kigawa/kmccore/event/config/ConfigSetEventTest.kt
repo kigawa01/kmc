@@ -25,7 +25,7 @@ class ConfigSetEventTest: AbstractTest() {
   
   @Test
   fun dispatch() {
-    val listener = TestListener()
+    val listener = TestListener(container.getUnit(TestPlugin::class.java))
     eventDispatcher.registerListener(listener)
     
     val key = SimpleConfigKey("id", "default")

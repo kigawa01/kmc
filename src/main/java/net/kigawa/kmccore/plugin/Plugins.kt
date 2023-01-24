@@ -1,7 +1,6 @@
 package net.kigawa.kmccore.plugin
 
-import net.kigawa.kmccore.EventDispatcher
-import net.kigawa.kmccore.KmcManager
+import net.kigawa.kmccore.*
 import net.kigawa.kmccore.event.plugin.PluginEndEvent
 import net.kigawa.kmccore.event.plugin.PluginStartEvent
 import net.kigawa.kmccore.util.AsyncExecutor
@@ -11,6 +10,7 @@ import net.kigawa.kutil.log.log.KLogger
 import net.kigawa.kutil.unit.annotation.Kunit
 import net.kigawa.kutil.unit.api.component.UnitContainer
 import net.kigawa.kutil.unit.component.UnitIdentify
+import net.kigawa.kutil.unit.concurrent.ConcurrentList
 import net.kigawa.kutil.unit.extension.registrar.ListRegistrar
 import net.kigawa.kutil.unit.extension.registrar.ResourceRegistrar
 import net.kigawa.kutil.unit.util.AnnotationUtil
@@ -29,6 +29,7 @@ class Plugins(
   private val kmcManager: KmcManager,
 ) {
   private val pluginDir: File = KutilFile.getRelativeFile("plugin")
+  private val plugins = ConcurrentList<Plugin>()
   
   @Synchronized
   fun start() {
@@ -56,15 +57,23 @@ class Plugins(
       if (eventDispatcher.dispatch(PluginStartEvent(plugin)).cancel) return@submit
       taskExecutor.start(plugin.getName())
       plugin.start()
+      container.getUnitList(Listener::class.java)
+        .filter {it.plugin == plugin}
+        .forEach(eventDispatcher::registerListener)
     }
   }
   
   @Synchronized
   fun endPlugin(plugin: Plugin) {
     if (eventDispatcher.dispatch(PluginEndEvent(plugin)).cancel) return
+    eventDispatcher.unregister(plugin)
     plugin.end()
     taskExecutor.end(plugin.getName())
     asyncExecutor.waitTask(plugin)
+  }
+  
+  fun loadPlugin(plugin: Plugin) {
+    plugins.add(plugin)
   }
   
   private fun loadJars() {

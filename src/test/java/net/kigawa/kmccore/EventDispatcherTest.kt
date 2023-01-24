@@ -1,7 +1,6 @@
 package net.kigawa.kmccore
 
-import net.kigawa.testplugin.TestEvent
-import net.kigawa.testplugin.TestListener
+import net.kigawa.testplugin.*
 import org.junit.*
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
@@ -23,7 +22,7 @@ class EventDispatcherTest: AbstractTest() {
   
   @Test
   fun dispatch() {
-    val listener = TestListener()
+    val listener = TestListener(container.getUnit(TestPlugin::class.java))
     val event = TestEvent()
     eventDispatcher.registerListener(listener)
     eventDispatcher.dispatch(event)

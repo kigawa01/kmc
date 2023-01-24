@@ -2,6 +2,7 @@ package net.kigawa.kmccore
 
 import net.kigawa.kmccore.annotation.EventHandler
 import net.kigawa.kmccore.event.Event
+import net.kigawa.kmccore.plugin.Plugin
 import net.kigawa.kutil.log.log.KLogger
 import net.kigawa.kutil.unit.annotation.Kunit
 import net.kigawa.kutil.unit.api.component.UnitContainer
@@ -15,6 +16,7 @@ class EventDispatcher(
 ) {
   private val listenerFuncList = mutableListOf<ListenerFunc>()
   
+  @Synchronized
   fun registerListener(listener: Listener) {
     listener.javaClass.methods.forEach {
       if (!it.isAnnotationPresent(EventHandler::class.java)) return@forEach
@@ -22,6 +24,7 @@ class EventDispatcher(
     }
   }
   
+  @Synchronized
   private fun registerMethod(method: Method, listener: Listener) {
     method.parameterTypes.forEach {
       if (!ReflectionUtil.instanceOf(it, Event::class.java)) return@forEach
@@ -31,6 +34,15 @@ class EventDispatcher(
     }
   }
   
+  @Synchronized
+  fun unregister(plugin: Plugin) {
+    listenerFuncList.forEach {
+      if (it.listener.plugin != plugin) return@forEach
+      listenerFuncList.remove(it)
+    }
+  }
+  
+  @Synchronized
   fun <T: Event> dispatch(event: T): T {
     val funcList = synchronized(listenerFuncList) {
       listenerFuncList.filter {ReflectionUtil.instanceOf(event.javaClass, it.eventClass)}
