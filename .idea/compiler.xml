@@ -6,7 +6,9 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="kmc" />
         <module name="template-java" />
+        <module name="kmc-core-api" />
         <module name="kmc-core" />
         <module name="kmc-core-plugin" />
       </profile>

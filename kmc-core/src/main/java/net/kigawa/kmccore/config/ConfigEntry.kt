@@ -1,7 +1,6 @@
 package net.kigawa.kmccore.config
 
 import net.kigawa.kmccore.plugin.Plugin
-import net.kigawa.kutil.unit.concurrent.ConcurrentList
 
 class ConfigEntry<T: Any>(
   val key: String,
@@ -10,7 +9,7 @@ class ConfigEntry<T: Any>(
 ) {
   constructor(key: ConfigKey<T>, pluginClass: Class<out Plugin>): this(key.getId(), pluginClass, key.getDefaultValue())
   
-  private val listeners = ConcurrentList<(T)->Unit>()
+  private val listeners = mutableListOf<(T)->Unit>()
   
   @Synchronized
   fun addListener(action: (T)->Unit): Boolean {

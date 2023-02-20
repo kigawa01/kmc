@@ -18,26 +18,16 @@ import java.net.JarURLConnection
 import java.util.*
 
 @Kunit
-class Plugins(
+class PluginManager(
   private val container: UnitContainer,
   private val eventDispatcher: EventDispatcher,
   private val logger: KLogger,
   private val taskExecutor: TaskExecutor,
   private val asyncExecutor: AsyncExecutor,
-  private val kmcManager: KmcManager,
+  private val kmcManager: KmcManagerImpl,
 ) {
   private val pluginDir: File = KutilFile.getRelativeFile("plugin")
   private val pluginEntries = ConcurrentList<PluginEntry>()
-  private val dependencies = Dependencies<Plugin> {listOf()}// TODO:
-  private val dependents = Dependencies<Plugin> {listOf()}// TODO:
-  fun getDependencies(plugin: Plugin) {
-    dependencies.findAllDependencies(plugin, DependencyStack())
-  }
-  
-  fun getDependents(plugin: Plugin) {
-    dependents.findAllDependencies(plugin, DependencyStack())
-  }
-  
   fun enableAll() {
     taskExecutor.start("plugins")
     pluginEntries.map {it.plugin}.map {
@@ -76,14 +66,7 @@ class Plugins(
     pluginEntries.add(entry)
     return entry
   }
-  
-  fun loadAll() {
-    taskExecutor.execute("load plugins") {
-      kmcManager.preLoadPlugin.forEach {container.getUnit(ResourceRegistrar::class.java).register(it)}
-      loadJars()
-    }
-  }
-  
+
   fun loadPlugin(plugin: Plugin) {
     pluginEntries.add(PluginEntry(plugin))
   }

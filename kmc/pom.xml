@@ -7,10 +7,10 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>kmc-core</artifactId>
+    <artifactId>kmc</artifactId>
     <packaging>jar</packaging>
 
-    <name>kmc-core</name>
+    <name>kmc</name>
     <url>http://maven.apache.org</url>
 
     <properties>
@@ -28,6 +28,17 @@
             <groupId>net.kigawa</groupId>
             <artifactId>kmc-core-api</artifactId>
             <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kigawa</groupId>
+            <artifactId>kmc-core-plugin</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>net.kigawa</groupId>
+            <artifactId>kmc-core</artifactId>
+            <version>1.0</version>
+            <scope>runtime</scope>
         </dependency>
     </dependencies>
 </project>

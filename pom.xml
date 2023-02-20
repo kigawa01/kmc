@@ -7,6 +7,8 @@
     <modules>
         <module>kmc-core</module>
         <module>kmc-core-plugin</module>
+        <module>kmc</module>
+        <module>kmc-core-api</module>
     </modules>
 
     <properties>
