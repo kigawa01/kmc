@@ -6,12 +6,12 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="kmc-manager" />
         <module name="template-java" />
+        <module name="kmc-core" />
+        <module name="kmc-core-plugin" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="kmc-core" target="1.5" />
       <module name="kmc-plugin" target="1.5" />
     </bytecodeTargetLevel>
   </component>
