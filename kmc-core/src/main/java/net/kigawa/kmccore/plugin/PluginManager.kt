@@ -1,6 +1,7 @@
 package net.kigawa.kmccore.plugin
 
 import net.kigawa.kmccore.*
+import net.kigawa.kmccore.concurrent.ConcurrentList
 import net.kigawa.kmccore.event.plugin.PluginEndEvent
 import net.kigawa.kmccore.event.plugin.PluginStartEvent
 import net.kigawa.kmccore.util.*
@@ -10,7 +11,6 @@ import net.kigawa.kutil.unitapi.UnitIdentify
 import net.kigawa.kutil.unitapi.annotation.Kunit
 import net.kigawa.kutil.unitapi.component.UnitContainer
 import net.kigawa.kutil.unitapi.registrar.ListRegistrar
-import net.kigawa.kutil.unitapi.registrar.ResourceRegistrar
 import net.kigawa.kutil.unitapi.util.AnnotationUtil
 import java.io.File
 import java.io.FileFilter
@@ -28,6 +28,12 @@ class PluginManager(
 ) {
   private val pluginDir: File = KutilFile.getRelativeFile("plugin")
   private val pluginEntries = ConcurrentList<PluginEntry>()
+  fun unloadAll() {
+  }
+  
+  fun unload(plugin: Plugin) {
+  }
+  
   fun enableAll() {
     taskExecutor.start("plugins")
     pluginEntries.map {it.plugin}.map {
@@ -66,7 +72,7 @@ class PluginManager(
     pluginEntries.add(entry)
     return entry
   }
-
+  
   fun loadPlugin(plugin: Plugin) {
     pluginEntries.add(PluginEntry(plugin))
   }

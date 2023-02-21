@@ -1,8 +1,8 @@
 package net.kigawa.kmccore.util
 
+import net.kigawa.kmccore.concurrent.ConcurrentList
 import net.kigawa.kmccore.plugin.Plugin
 import net.kigawa.kutil.log.log.KLogger
-import net.kigawa.kutil.unit.concurrent.ConcurrentList
 import java.util.concurrent.*
 
 class AsyncExecutor(private val logger: KLogger): AutoCloseable {
