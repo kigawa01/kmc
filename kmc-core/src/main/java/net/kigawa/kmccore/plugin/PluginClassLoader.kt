@@ -6,7 +6,7 @@ import java.net.URLClassLoader
 
 @Kunit
 class PluginClassLoader(private val classLoaderManager: ClassLoaderManager, url: URL):
-  URLClassLoader(arrayOf(url), getSystemClassLoader()) {
+  URLClassLoader(arrayOf(url)) {
   override fun loadClass(name: String?, resolve: Boolean): Class<*> {
     return loadClass(name, resolve, true)
   }

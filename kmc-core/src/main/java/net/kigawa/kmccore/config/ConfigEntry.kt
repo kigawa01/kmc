@@ -1,27 +1,35 @@
 package net.kigawa.kmccore.config
 
-import net.kigawa.kmccore.plugin.Plugin
+import net.kigawa.kmccore.concurrent.ConcurrentList
 
 class ConfigEntry<T: Any>(
-  val key: String,
-  val pluginClass: Class<out Plugin>,
-  var value: T,
+  val key: ConfigKey<T, *>,
+  value: T,
 ) {
-  constructor(key: ConfigKey<T>, pluginClass: Class<out Plugin>): this(key.getId(), pluginClass, key.getDefaultValue())
+  var value: T = value
+    set(value) {
+      listeners.forEach {it.call(value)}
+      field = value
+    }
   
-  private val listeners = mutableListOf<(T)->Unit>()
+  constructor(key: ConfigKey<T, *>): this(key, key.defaultValue)
   
-  @Synchronized
-  fun addListener(action: (T)->Unit): Boolean {
-    return listeners.add(action)
+  private val listeners = ConcurrentList<ConfigListenerTask<T>>()
+  
+  fun addListener(isCall: Boolean, action: (T)->Unit): ConfigListenerTask<T> {
+    return ConfigListenerTask(this, action).apply(listeners::add).also {
+      if (isCall) it.call(value)
+    }
   }
   
-  @Synchronized
-  fun removeListener(action: (T)->Unit): Boolean {
-    return listeners.remove(action)
-  }
-  
-  fun getListeners(): List<(T)->Unit> {
-    return listeners.toMutableList()
+  class ConfigListenerTask<T: Any>(private val configEntry: ConfigEntry<T>, private val action: (T)->Unit) {
+    fun remove() {
+      configEntry.listeners.remove(this)
+    }
+    
+    fun call(value: T) {
+      action(value)
+    }
   }
 }
+

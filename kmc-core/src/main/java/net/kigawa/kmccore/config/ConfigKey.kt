@@ -1,6 +1,9 @@
 package net.kigawa.kmccore.config
 
-interface ConfigKey<T> {
-  fun getId(): String
-  fun getDefaultValue(): T
+import net.kigawa.kmccore.plugin.Plugin
+
+interface ConfigKey<T: Any, P: Plugin> {
+  val id: String
+  val defaultValue: T
+  val pluginClass: Class<P>
 }
