@@ -1,5 +1,6 @@
-package net.kigawa.kmccore.plugin
+package net.kigawa.kmccore.classloader
 
+import net.kigawa.kmccore.classloader.ClassLoaderManager
 import net.kigawa.kutil.unitapi.annotation.Kunit
 import java.net.URL
 import java.net.URLClassLoader
