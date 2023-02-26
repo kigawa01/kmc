@@ -7,9 +7,11 @@ import java.io.File
 @Kunit
 class ClassLoaderManager {
   private val entries = ConcurrentList<ClassLoaderEntry>()
-  private val defaultLoader = ClassLoaderManager::class.java.classLoader
-  private val defaultClasses =
+  private val defaultEntry = ClassLoaderEntry(
+    this,
+    ClassLoaderManager::class.java.classLoader,
     ClassLoadUtil.getClasses(ClassLoaderManager::class.java.classLoader) {!it.startsWith("net.kigawa.kmccore")}
+  )
   
   fun loadFile(pluginFile: File): ClassLoaderEntry {
     val classLoader = PluginClassLoader(this, pluginFile.toURI().toURL())
@@ -40,7 +42,7 @@ class ClassLoaderManager {
     entries.forEach {
       if (ignoreLoader.contains(it.classLoader)) return@forEach
       try {
-        return it.classLoader.loadClass(name, resolve, false)
+        return it.loadClass(name)
       } catch (_: ClassNotFoundException) {
       }
     }

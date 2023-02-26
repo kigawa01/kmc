@@ -1,6 +1,5 @@
 package net.kigawa.kmccore.classloader
 
-import net.kigawa.kmccore.classloader.ClassLoaderManager
 import net.kigawa.kutil.unitapi.annotation.Kunit
 import java.net.URL
 import java.net.URLClassLoader
@@ -9,18 +8,23 @@ import java.net.URLClassLoader
 class PluginClassLoader(private val classLoaderManager: ClassLoaderManager, url: URL):
   URLClassLoader(arrayOf(url)) {
   override fun loadClass(name: String?, resolve: Boolean): Class<*> {
-    return loadClass(name, resolve, true)
-  }
-  
-  fun loadClass(name: String?, resolve: Boolean, findAll: Boolean): Class<*> {
     try {
-      return super.loadClass(name, resolve)
+      return normalLoadClass(name, resolve)
     } catch (_: ClassNotFoundException) {
     }
-    if (findAll) {
+    try {
       return classLoaderManager.loadClass(name, resolve, this)
+    } catch (_: ClassNotFoundException) {
     }
     
     throw ClassNotFoundException(name)
+  }
+  
+  fun normalLoadClass(name: String?): Class<*> {
+    return super.loadClass(name, false)
+  }
+  
+  fun normalLoadClass(name: String?, resolve: Boolean): Class<*> {
+    return super.loadClass(name, resolve)
   }
 }
