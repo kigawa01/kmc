@@ -1,17 +1,18 @@
 package net.kigawa.kmccore.classloader
 
-import net.kigawa.kmccore.concurrent.ConcurrentList
+import net.kigawa.kmccore.util.manager.Manager
 import net.kigawa.kutil.unitapi.annotation.Kunit
 import java.io.File
 
 @Kunit
-class ClassLoaderManager {
-  private val entries = ConcurrentList<ClassLoaderEntry>()
-  private val defaultEntry = ClassLoaderEntry(
-    this,
-    ClassLoaderManager::class.java.classLoader,
-    ClassLoadUtil.getClasses(ClassLoaderManager::class.java.classLoader) {!it.startsWith("net.kigawa.kmccore")}
-  )
+class ClassLoaderManager: Manager<ClassLoaderEntry>() {
+  init {
+    ClassLoaderEntry(
+      this,
+      ClassLoaderManager::class.java.classLoader,
+      ClassLoadUtil.getClasses(ClassLoaderManager::class.java.classLoader) {!it.startsWith("net.kigawa.kmccore")}
+    ).apply(entries::add)
+  }
   
   fun loadFile(pluginFile: File): ClassLoaderEntry {
     val classLoader = PluginClassLoader(this, pluginFile.toURI().toURL())
@@ -32,10 +33,6 @@ class ClassLoaderManager {
   
   fun loadClass(name: String?): Class<*> {
     return loadClass(name, false)
-  }
-  
-  fun removeEntry(entry: ClassLoaderEntry) {
-    entries.remove(entry)
   }
   
   fun loadClass(name: String?, resolve: Boolean, vararg ignoreLoader: PluginClassLoader): Class<*> {

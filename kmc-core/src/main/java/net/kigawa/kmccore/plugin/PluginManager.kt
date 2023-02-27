@@ -1,6 +1,7 @@
 package net.kigawa.kmccore.plugin
 
 import net.kigawa.kmccore.*
+import net.kigawa.kmccore.classloader.PluginClassLoader
 import net.kigawa.kmccore.concurrent.ConcurrentList
 import net.kigawa.kmccore.event.plugin.PluginEndEvent
 import net.kigawa.kmccore.event.plugin.PluginStartEvent
