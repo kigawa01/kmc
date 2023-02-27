@@ -1,17 +1,25 @@
 package net.kigawa.kmccore.classloader
 
+import net.kigawa.kmccore.classes.PluginClassManager
 import net.kigawa.kmccore.util.manager.Manager
 import net.kigawa.kutil.unitapi.annotation.Kunit
 import java.io.File
 
 @Kunit
-class ClassLoaderManager: Manager<ClassLoaderEntry>() {
+class ClassLoaderManager(private val pluginClassManager: PluginClassManager): Manager<ClassLoaderEntry>() {
   init {
     ClassLoaderEntry(
       this,
       ClassLoaderManager::class.java.classLoader,
       ClassLoadUtil.getClasses(ClassLoaderManager::class.java.classLoader) {!it.startsWith("net.kigawa.kmccore")}
     ).apply(entries::add)
+  }
+  
+  override fun remove(entry: ClassLoaderEntry) {
+    super.remove(entry)
+    pluginClassManager.getEntries()
+      .filter {it.classLoaderEntry == entry}
+      .forEach {it.remove()}
   }
   
   fun loadFile(pluginFile: File): ClassLoaderEntry {
@@ -25,10 +33,6 @@ class ClassLoaderManager: Manager<ClassLoaderEntry>() {
       if (it.isFile) listOf(loadFile(it))
       else loadAllFile(it)
     } ?: listOf()
-  }
-  
-  fun getEntries(): MutableList<ClassLoaderEntry> {
-    return entries.toMutableList()
   }
   
   fun loadClass(name: String?): Class<*> {

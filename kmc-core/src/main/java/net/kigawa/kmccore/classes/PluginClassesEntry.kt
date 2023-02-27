@@ -7,7 +7,7 @@ import net.kigawa.kmccore.util.manager.ManagedEntry
 
 class PluginClassesEntry(
   pluginClassManager: PluginClassManager,
-  val classloader: ClassLoaderEntry,
+  val classLoaderEntry: ClassLoaderEntry,
   val pluginClass: Class<out Plugin>,
 ): ManagedEntry<PluginClassesEntry>(pluginClassManager) {
   private val classes = ConcurrentSet<Class<out Any>>()
@@ -55,6 +55,6 @@ class PluginClassesEntry(
   }
   
   override fun toString(): String {
-    return "PluginClassesEntry(classLoaderManager=$manager, classloader=$classloader, pluginClass=$pluginClass, classes=$classes, child=$children)"
+    return "PluginClassesEntry(classLoaderManager=$manager, classloader=$classLoaderEntry, pluginClass=$pluginClass, classes=$classes, child=$children)"
   }
 }
