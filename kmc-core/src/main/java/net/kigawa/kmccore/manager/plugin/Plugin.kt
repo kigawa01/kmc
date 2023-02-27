@@ -1,4 +1,4 @@
-package net.kigawa.kmccore.plugin
+package net.kigawa.kmccore.manager.plugin
 
 interface Plugin {
   fun getName(): String {

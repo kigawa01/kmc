@@ -1,6 +1,6 @@
-package net.kigawa.kmccore.classloader
+package net.kigawa.kmccore.manager.classloader
 
-import net.kigawa.kmccore.classes.PluginClassManager
+import net.kigawa.kmccore.manager.classes.PluginClassManager
 import net.kigawa.kmccore.util.manager.Manager
 import net.kigawa.kutil.unitapi.annotation.Kunit
 import java.io.File

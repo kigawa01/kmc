@@ -1,7 +1,7 @@
 package net.kigawa.kmccore.util
 
 import net.kigawa.kmccore.concurrent.ConcurrentList
-import net.kigawa.kmccore.plugin.Plugin
+import net.kigawa.kmccore.manager.plugin.Plugin
 import net.kigawa.kutil.log.log.KLogger
 import java.util.concurrent.*
 

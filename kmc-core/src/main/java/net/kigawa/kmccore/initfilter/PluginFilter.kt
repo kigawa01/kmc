@@ -1,8 +1,8 @@
 package net.kigawa.kmccore.initfilter
 
 import net.kigawa.kmccore.EventDispatcher
-import net.kigawa.kmccore.plugin.Plugin
-import net.kigawa.kmccore.plugin.PluginManager
+import net.kigawa.kmccore.manager.plugin.Plugin
+import net.kigawa.kmccore.manager.plugin.PluginManager
 import net.kigawa.kutil.unit.api.component.UnitInjectorComponent
 import net.kigawa.kutil.unit.api.extention.InitializedFilter
 import net.kigawa.kutil.unit.component.InitStack

@@ -1,8 +1,8 @@
-package net.kigawa.kmccore.classes
+package net.kigawa.kmccore.manager.classes
 
-import net.kigawa.kmccore.classloader.ClassLoaderEntry
+import net.kigawa.kmccore.manager.classloader.ClassLoaderEntry
 import net.kigawa.kmccore.concurrent.ConcurrentSet
-import net.kigawa.kmccore.plugin.Plugin
+import net.kigawa.kmccore.manager.plugin.Plugin
 import net.kigawa.kmccore.util.manager.ManagedEntry
 
 class PluginClassesEntry(

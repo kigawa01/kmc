@@ -1,6 +1,6 @@
 package net.kigawa.kmccore
 
-import net.kigawa.kmccore.plugin.PluginManager
+import net.kigawa.kmccore.manager.plugin.PluginManager
 import net.kigawa.kmccore.util.AsyncExecutor
 import net.kigawa.kmccore.util.TaskExecutor
 import net.kigawa.kmccoreapi.KmcManager

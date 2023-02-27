@@ -1,4 +1,4 @@
-package net.kigawa.kmccore.classloader
+package net.kigawa.kmccore.manager.classloader
 
 import net.kigawa.kmccore.util.manager.ManagedEntry
 

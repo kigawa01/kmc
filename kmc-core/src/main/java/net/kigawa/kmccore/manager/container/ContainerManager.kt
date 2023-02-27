@@ -1,7 +1,7 @@
-package net.kigawa.kmccore.container
+package net.kigawa.kmccore.manager.container
 
-import net.kigawa.kmccore.classloader.ClassLoaderEntry
-import net.kigawa.kmccore.classloader.ClassLoaderManager
+import net.kigawa.kmccore.manager.classloader.ClassLoaderEntry
+import net.kigawa.kmccore.manager.classloader.ClassLoaderManager
 import net.kigawa.kmccore.concurrent.ConcurrentList
 import net.kigawa.kutil.unitapi.component.UnitContainer
 

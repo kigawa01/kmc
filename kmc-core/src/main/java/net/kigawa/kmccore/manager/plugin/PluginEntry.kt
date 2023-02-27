@@ -1,4 +1,4 @@
-package net.kigawa.kmccore.plugin
+package net.kigawa.kmccore.manager.plugin
 
 import net.kigawa.kmccore.EventDispatcher
 import net.kigawa.kmccore.Listener
