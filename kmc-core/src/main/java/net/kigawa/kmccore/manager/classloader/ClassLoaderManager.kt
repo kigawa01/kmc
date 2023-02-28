@@ -22,6 +22,7 @@ class ClassLoaderManager(private val pluginClassManager: PluginClassManager): Ma
       .forEach {it.remove()}
   }
   
+  @Synchronized
   fun loadFile(pluginFile: File): ClassLoaderEntry {
     val classLoader = PluginClassLoader(this, pluginFile.toURI().toURL())
     return ClassLoaderEntry(this, classLoader).apply(entries::add)

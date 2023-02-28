@@ -1,14 +1,15 @@
 package net.kigawa.kmccore.manager.classes
 
-import net.kigawa.kmccore.manager.classloader.ClassLoaderEntry
 import net.kigawa.kmccore.concurrent.ConcurrentList
+import net.kigawa.kmccore.manager.classloader.ClassLoaderEntry
 import net.kigawa.kmccore.manager.plugin.Plugin
 import net.kigawa.kmccore.util.manager.Manager
 import net.kigawa.kutil.unitapi.annotation.Kunit
 import java.lang.reflect.Modifier
 
 @Kunit
-class PluginClassManager: Manager<PluginClassesEntry>() {
+class PluginClassManager: Manager<PluginClassEntry>() {
+  @Synchronized
   fun loadClasses(classLoaderEntry: ClassLoaderEntry) {
     val pluginClasses = classLoaderEntry.classList
       .filter {!it.isInterface}
@@ -16,8 +17,8 @@ class PluginClassManager: Manager<PluginClassesEntry>() {
       .filter {Plugin::class.java.isAssignableFrom(it)}
       .map {it.asSubclass(Plugin::class.java)}
     
-    val pluginEntries = pluginClasses.map {PluginClassesEntry(this, classLoaderEntry, it)}
-    val result = ConcurrentList<PluginClassesEntry>()
+    val pluginEntries = pluginClasses.map {PluginClassEntry(this, classLoaderEntry, it)}
+    val result = ConcurrentList<PluginClassEntry>()
     pluginEntries.forEach {pluginClassesEntry->
       result.forEach resultLoop@{
         if (pluginClassesEntry.isChildPackage(it)) {
