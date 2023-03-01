@@ -43,4 +43,9 @@ class PluginClassManager: Manager<PluginClassEntry>() {
     
     entries.addAll(result)
   }
+  
+  override fun remove(entry: PluginClassEntry) {
+    super.remove(entry)
+    
+  }
 }

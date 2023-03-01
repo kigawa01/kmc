@@ -1,25 +1,17 @@
 package net.kigawa.kmccore.manager.classloader
 
-import net.kigawa.kmccore.manager.classes.PluginClassManager
 import net.kigawa.kmccore.util.manager.Manager
 import net.kigawa.kutil.unitapi.annotation.Kunit
 import java.io.File
 
 @Kunit
-class ClassLoaderManager(private val pluginClassManager: PluginClassManager): Manager<ClassLoaderEntry>() {
+class ClassLoaderManager: Manager<ClassLoaderEntry>() {
   init {
     ClassLoaderEntry(
       this,
       ClassLoaderManager::class.java.classLoader,
       ClassLoadUtil.getClasses(ClassLoaderManager::class.java.classLoader) {!it.startsWith("net.kigawa.kmccore")}
     ).apply(entries::add)
-  }
-  
-  override fun remove(entry: ClassLoaderEntry) {
-    super.remove(entry)
-    pluginClassManager.getEntries()
-      .filter {it.classLoaderEntry == entry}
-      .forEach {it.remove()}
   }
   
   @Synchronized

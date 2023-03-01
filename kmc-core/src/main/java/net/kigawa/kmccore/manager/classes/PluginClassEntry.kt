@@ -8,9 +8,9 @@ import net.kigawa.kutil.unitapi.annotation.Dependencies
 
 class PluginClassEntry(
   pluginClassManager: PluginClassManager,
-  val classLoaderEntry: ClassLoaderEntry,
+  parent: ClassLoaderEntry,
   val pluginClass: Class<out Plugin>,
-): ManagedEntry<PluginClassEntry>(pluginClassManager) {
+): ManagedEntry<PluginClassEntry, ClassLoaderEntry>(pluginClassManager, parent) {
   private val classes = ConcurrentSet<Class<out Any>>()
   private val children = ConcurrentSet<PluginClassEntry>()
   val dependencies = pluginClass.getAnnotation(Dependencies::class.java).value
@@ -61,6 +61,6 @@ class PluginClassEntry(
   }
   
   override fun toString(): String {
-    return "PluginClassesEntry(classLoaderManager=$manager, classloader=$classLoaderEntry, pluginClass=$pluginClass, classes=$classes, child=$children)"
+    return "PluginClassesEntry(classLoaderManager=$manager, classloader=$parent, pluginClass=$pluginClass, classes=$classes, child=$children)"
   }
 }

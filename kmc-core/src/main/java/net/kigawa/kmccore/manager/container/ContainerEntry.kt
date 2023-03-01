@@ -5,13 +5,15 @@ import net.kigawa.kmccore.util.manager.ManagedEntry
 import net.kigawa.kutil.unitapi.component.UnitContainer
 
 class ContainerEntry(
-  val pluginClassEntry: PluginClassEntry,
+  parent: PluginClassEntry,
   val dependencies: List<ContainerEntry>,
   manager: ContainerManager,
-): ManagedEntry<ContainerEntry>(manager) {
+  rootContainer: UnitContainer,
+): ManagedEntry<ContainerEntry, PluginClassEntry>(manager, parent) {
   val container: UnitContainer
   
   init {
-    container = UnitContainer.create(pluginClassEntry.name, *dependencies.map {it.container}.toTypedArray())
+    container = dependencies.map {it.container}.toTypedArray()
+      .let {UnitContainer.create(this.parent.name, *it, rootContainer)}
   }
 }

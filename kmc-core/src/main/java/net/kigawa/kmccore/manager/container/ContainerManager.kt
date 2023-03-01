@@ -28,7 +28,7 @@ class ContainerManager(
           ?.let {loadContainer(it, stack.add(pluginClassEntry))}
         ?: throw RuntimeException("depended plugin is not found($pluginClassEntry,dependency=$dependency)")
       }
-    return ContainerEntry(pluginClassEntry, dependencies, this)
+    return ContainerEntry(pluginClassEntry, dependencies, this,rootContainer)
       .apply(entries::add)
   }
 }
