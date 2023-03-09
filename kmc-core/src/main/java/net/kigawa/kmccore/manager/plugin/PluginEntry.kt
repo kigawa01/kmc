@@ -2,15 +2,18 @@ package net.kigawa.kmccore.manager.plugin
 
 import net.kigawa.kmccore.EventDispatcher
 import net.kigawa.kmccore.Listener
+import net.kigawa.kmccore.manager.container.ContainerEntry
 import net.kigawa.kmccore.util.TaskExecutor
-import net.kigawa.kutil.unitapi.component.UnitContainer
+import net.kigawa.kmccore.util.manager.ManagedEntry
+import net.kigawa.kmccore.util.manager.Manager
 
 class PluginEntry(
-  val plugin: Plugin,
-  private val taskExecutor: TaskExecutor,
-  private val container: UnitContainer,
-  private val eventDispatcher: EventDispatcher,
-) {
+  manager: Manager<PluginEntry>,
+  parent: ContainerEntry,
+): ManagedEntry<PluginEntry, ContainerEntry>(manager, parent) {
+  val plugin = parent.container.getUnit(Plugin::class.java)
+  private val taskExecutor = parent.container.getUnit(TaskExecutor::class.java)
+  private val eventDispatcher = parent.container.getUnit(EventDispatcher::class.java)
   var isEnable = false
     private set
   
@@ -21,7 +24,7 @@ class PluginEntry(
     
     taskExecutor.start(plugin.getName())
     plugin.onEnable()
-    container.getUnitList(Listener::class.java)
+    parent.container.getUnitList(Listener::class.java)
       .filter {it.plugin == plugin}
       .forEach(eventDispatcher::registerListener)
   }
@@ -32,7 +35,7 @@ class PluginEntry(
     isEnable = false
     
     plugin.onDisable()
-    container.getUnitList(Listener::class.java)
+    parent.container.getUnitList(Listener::class.java)
       .filter {it.plugin == plugin}
       .forEach {eventDispatcher.unregisterListener(it)}
     taskExecutor.end(plugin.getName())

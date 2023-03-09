@@ -7,7 +7,7 @@ class ClassLoaderEntry(
   classLoaderManager: ClassLoaderManager,
   val classLoader: ClassLoader,
   val classList: List<Class<*>>,
-): ManagedEntry<ClassLoaderEntry, RemoveAble>(classLoaderManager) {
+): ManagedEntry<ClassLoaderEntry, RemoveAble?>(classLoaderManager, null) {
   constructor(classLoaderManager: ClassLoaderManager, classLoader: ClassLoader): this(
     classLoaderManager,
     classLoader,

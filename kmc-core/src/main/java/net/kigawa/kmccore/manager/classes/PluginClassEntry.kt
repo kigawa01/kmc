@@ -60,6 +60,10 @@ class PluginClassEntry(
     return isChildPackage(clazz.packageName)
   }
   
+  fun getClasses(): Set<Class<out Any>> {
+    return classes
+  }
+  
   override fun toString(): String {
     return "PluginClassesEntry(classLoaderManager=$manager, classloader=$parent, pluginClass=$pluginClass, classes=$classes, child=$children)"
   }
