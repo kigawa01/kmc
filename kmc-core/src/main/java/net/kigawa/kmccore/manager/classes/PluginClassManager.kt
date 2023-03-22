@@ -46,6 +46,5 @@ class PluginClassManager: Manager<PluginClassEntry>() {
   
   override fun remove(entry: PluginClassEntry) {
     super.remove(entry)
-    
   }
 }

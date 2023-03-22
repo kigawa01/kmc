@@ -25,7 +25,7 @@ class ConfigManager(
   fun <T: Any> addListener(
     key: ConfigKey<T, *>,
     isCall: Boolean,
-    action: (T)->Unit,
+    action: (T?, T?)->Unit,
   ): ConfigEntry.ConfigListenerTask<T> {
     return findEntry(key).addListener(isCall, action)
   }
