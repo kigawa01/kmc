@@ -22,7 +22,7 @@ class ContainerManager(
     val dependencies = pluginClassEntry.dependencies
       .map {dependency->
         containerEntries
-          .firstOrNull {dependency.isAssignableFrom(it.parent.pluginClass)}
+          .firstOrNull {dependency.isAssignableFrom(it.parentField.pluginClass)}
         ?: classLoaderManager.getEntries()
           .firstOrNull {dependency.isAssignableFrom(it.pluginClass)}
           ?.let {loadContainer(it, stack.add(pluginClassEntry))}

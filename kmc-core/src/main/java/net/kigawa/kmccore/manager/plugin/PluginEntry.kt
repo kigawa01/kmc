@@ -12,7 +12,7 @@ class PluginEntry(
   parent: ContainerEntry,
 ): ManagedEntry<PluginEntry, ContainerEntry>(manager, parent) {
   val plugin = parent.container.getUnit(Plugin::class.java)
-  private val taskExecutor = parent.container.getUnit(TaskExecutor::class.java)
+  private val taskExecutor = parent.container.getUnit (TaskExecutor::class.java)
   private val eventDispatcher = parent.container.getUnit(EventDispatcher::class.java)
   var isEnable = false
     private set
@@ -24,7 +24,7 @@ class PluginEntry(
     
     taskExecutor.start(plugin.getName())
     plugin.onEnable()
-    parent.container.getUnitList(Listener::class.java)
+    parentField.container.getUnitList(Listener::class.java)
       .filter {it.plugin == plugin}
       .forEach(eventDispatcher::registerListener)
   }
@@ -35,7 +35,7 @@ class PluginEntry(
     isEnable = false
     
     plugin.onDisable()
-    parent.container.getUnitList(Listener::class.java)
+    parentField.container.getUnitList(Listener::class.java)
       .filter {it.plugin == plugin}
       .forEach {eventDispatcher.unregisterListener(it)}
     taskExecutor.end(plugin.getName())

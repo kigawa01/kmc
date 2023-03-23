@@ -65,6 +65,6 @@ class PluginClassEntry(
   }
   
   override fun toString(): String {
-    return "PluginClassesEntry(classLoaderManager=$manager, classloader=$parent, pluginClass=$pluginClass, classes=$classes, child=$children)"
+    return "PluginClassesEntry(classLoaderManager=$manager, classloader=$parentField, pluginClass=$pluginClass, classes=$classes, child=$children)"
   }
 }

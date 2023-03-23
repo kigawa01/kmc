@@ -15,7 +15,7 @@ class ContainerEntry(
   
   init {
     container = dependencies.map {it.container}.toTypedArray()
-      .let {UnitContainer.create(this.parent.name, *it, rootContainer)}
+      .let {UnitContainer.create(parent.name, *it, rootContainer)}
     
     parent.getClasses().map {
       container.getUnit(SelectionRegistrar::class.java).selectRegister(it)
